@@ -1,0 +1,78 @@
+{% assign ss = section.settings %}
+
+<div class="featured main-container">
+  {%- if ss.feat_title != blank -%}
+    <h3 class="featured__header">{{ ss.feat_title }}</h3>
+  {%- endif -%}
+  {%- if ss.sub_title != blank -%}
+    <div class="featured__sub-title">{{ ss.sub_title }}</div>
+  {%- endif -%}
+    <div class="featured__container">
+    {% for block in section.blocks %}
+      {% assign bs = block.settings %}
+      {%-  if bs.product != blank -%}
+        <div class="featured__item">
+          <a href="{{ bs.product.url }}">
+            <div
+              class="AspectRatio AspectRatio--withFallback"
+              style="padding-bottom: {{ 100.0 | divided_by: bs.product.featured_image.aspect_ratio }}%;"
+            >
+              <img
+                class="featured__image lazyload w-[200px]"
+                src="{{ bs.product.featured_image | img_url: 'master' }}" 
+                alt="{{ bs.product.featured_image .alt | escape }}"
+              >
+            </div>
+            <div class="featured__info">
+              <p class="featured__title">
+                {{ bs.product.title }}
+              </p>
+              <p class="featured__price">
+                {% unless bs.product.available %}
+                  <br><strong>sold out</strong>
+                {% endunless %}
+                {{ bs.product.price | money_with_currency }}
+              </p>
+            </div>
+          </a>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+    </div>
+  </div>
+
+{% schema %}
+  {
+    "name": "Featured",
+    "settings": [
+      {
+        "type": "text",
+        "id": "feat_title",
+        "label": "Title"
+      },
+      {
+        "type": "text",
+        "id": "sub_title",
+        "label": "Subtitle"
+      }
+    ],
+      "blocks": [
+        {
+          "type": "text",
+          "name": "Product ",
+          "settings": [
+            {
+              "type": "product",
+              "id": "product",
+              "label": "Select Product"
+            }
+          ]
+        }
+    ],
+    "presets": [
+      {
+        "name": "Featured"
+      }
+    ]
+  }
+{% endschema %}
